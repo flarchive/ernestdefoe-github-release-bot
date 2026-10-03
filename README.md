@@ -2,13 +2,16 @@
 
 > **Read-only archive of released versions of ernestdefoe/github-release-bot.** Not for installation: use [Packagist](https://packagist.org/packages/ernestdefoe/github-release-bot) or the [upstream repository](https://github.com/ernestdefoe/github-release-bot).
 
-**0** versions archived · Latest: [`2.1.0`](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.1.0) · License: `MIT` · Flarum: `^2.0`
+**4** versions archived · Latest: [`2.1.0`](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.1.0) · License: `MIT` · Flarum: `^2.0`
 
 ## Archived Versions
 
 | Version | Released | Flarum | Source |
 |---|---|---|---|
-| — | — | — | — |
+| `2.0.0` | 2026-05-19 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.0.0) |
+| `2.0.1` | 2026-05-19 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.0.1) |
+| `2.0.2` | 2026-05-19 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.0.2) |
+| `2.1.0` | 2026-09-02 | `^2.0` | [Browse](https://github.com/flarchive/ernestdefoe-github-release-bot/tree/archive/v2.1.0) |
 
 Catalog entry: [packages/ernestdefoe-github-release-bot.json](https://github.com/flarchive/archive-index/blob/main/packages/ernestdefoe-github-release-bot.json)
 
