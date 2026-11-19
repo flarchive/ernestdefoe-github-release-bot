@@ -1,0 +1,88 @@
+<?php
+
+namespace ErnestDefoe\GitHubReleaseBot;
+
+use Carbon\Carbon;
+use Flarum\Discussion\Discussion;
+use Flarum\Locale\TranslatorInterface;
+use Flarum\Post\CommentPost;
+use Flarum\User\UserRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+/**
+ * Turns a release into a reply in a discussion.
+ *
+ * Extracted from the webhook controller so the poller posts through exactly the
+ * same path — a release announced because we were told about it and one
+ * announced because we noticed it should be indistinguishable in the thread.
+ */
+class ReleasePoster
+{
+    public function __construct(
+        protected UserRepository $users,
+        protected TranslatorInterface $translator
+    ) {
+    }
+
+    /**
+     * @throws ModelNotFoundException if the bot user or discussion is missing.
+     */
+    public function post(
+        int $botUserId,
+        int $discussionId,
+        string $heading,
+        string $notes,
+        string $url,
+        ?string $ip = null
+    ): CommentPost {
+        $bot = $this->users->findOrFail($botUserId);
+
+        /** @var Discussion $discussion */
+        $discussion = Discussion::query()->findOrFail($discussionId);
+
+        $notes = trim($notes);
+
+        if ($notes === '') {
+            $notes = $this->translator->trans('ernestdefoe-github-release-bot.forum.post.no_notes');
+        }
+
+        $content = "## {$heading}\n\n{$notes}";
+
+        if ($this->isWebUrl($url)) {
+            $content .= "\n\n[".$this->translator->trans('ernestdefoe-github-release-bot.forum.post.view_release')."]({$url})";
+        }
+
+        // type + number are auto-assigned by Post::boot(); last_post / comment
+        // counts are bumped by DiscussionMetadataUpdater on the Posted event.
+        $post = new CommentPost();
+        $post->setContentAttribute($content, $bot);
+        $post->created_at = Carbon::now();
+        $post->user_id = $bot->id;
+        $post->discussion_id = $discussion->id;
+        $post->ip_address = $ip;
+        $post->save();
+
+        // Posted-event listeners that normally refresh discussion stats don't
+        // always fire when posts are created outside the JSON:API endpoint,
+        // so update them here to keep the thread display in sync.
+        $discussion->refreshLastPost();
+        $discussion->refreshCommentCount();
+        $discussion->refreshParticipantCount();
+        $discussion->save();
+
+        return $post;
+    }
+
+    /**
+     * Only a plain http(s) URL becomes the link. The URL comes from a webhook
+     * payload or a feed, so a `javascript:` URI, or one with whitespace or
+     * brackets that would break out of the Markdown link, is dropped and the
+     * post goes out without it.
+     */
+    private function isWebUrl(string $url): bool
+    {
+        return in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)
+            && (string) parse_url($url, PHP_URL_HOST) !== ''
+            && ! preg_match('/[\s()<>\[\]]/', $url);
+    }
+}

@@ -1,0 +1,65 @@
+{
+  "name": "ernestdefoe/github-release-bot",
+  "description": "Listens for GitHub release webhooks and posts a reply to a configured discussion thread.",
+  "keywords": ["flarum", "flarum-extension", "github", "webhook", "release", "automation"],
+  "type": "flarum-extension",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ernestdefoe",
+      "email": "ernestdefoe@gmail.com"
+    }
+  ],
+  "homepage": "https://github.com/ernestdefoe/github-release-bot",
+  "support": {
+    "issues": "https://github.com/ernestdefoe/github-release-bot/issues",
+    "source": "https://github.com/ernestdefoe/github-release-bot"
+  },
+  "require": {
+    "php": "^8.3",
+    "flarum/core": "^2.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^7.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "ErnestDefoe\\GitHubReleaseBot\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ErnestDefoe\\GitHubReleaseBot\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "flarum-extension": {
+      "title": "GitHub Release Bot",
+      "category": "feature",
+      "icon": {
+        "name": "fab fa-github",
+        "backgroundColor": "#24292e",
+        "color": "#ffffff"
+      }
+    }
+  },
+  "require-dev": {
+    "flarum/phpstan": "^2.0",
+    "flarum/testing": "^2.0"
+  },
+  "scripts": {
+    "test": [
+      "@test:integration"
+    ],
+    "test:integration": "phpunit -c tests/phpunit.integration.xml",
+    "test:setup": "@php tests/integration/setup.php",
+    "analyse:phpstan": "phpstan analyse"
+  },
+  "scripts-descriptions": {
+    "test": "Runs all tests.",
+    "test:integration": "Runs all integration tests.",
+    "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+    "analyse:phpstan": "Run static analysis"
+  },
+  "minimum-stability": "beta",
+  "prefer-stable": true
+}
